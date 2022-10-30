@@ -1,1 +1,0 @@
-token = "among.sus.token"
