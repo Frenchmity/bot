@@ -19,4 +19,12 @@ async def on_ready():
     """When the bot is connected to Discord and ready to start doing stuff"""
     await cmds.setup(bot)
 
+@bot.command()
+@commands.is_owner()
+async def sync_commands(ctx):
+    """Synchronize slash commands to the Unmity server"""
+    bot.tree.copy_global_to(guild=discord.Object(id=1036052928806518824))
+    await bot.tree.sync(guild=discord.Object(id=1036052928806518824))
+    await ctx.send("Commands synced!")
+
 bot.run(config.token)

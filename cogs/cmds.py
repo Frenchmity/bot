@@ -9,6 +9,7 @@ class Cmds(commands.Cog):
 
     @commands.hybrid_command()
     async def hello(self, ctx):
+        """Testing commands"""
         await ctx.send("Hello, world!")
 
 async def setup(bot):
