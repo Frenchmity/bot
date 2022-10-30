@@ -3,7 +3,7 @@
 import discord
 from discord.ext import commands
 
-from cogs import cmds
+from cogs import cmds, logs
 
 import config
 
@@ -18,6 +18,7 @@ bot = commands.Bot(intents=intents, command_prefix="!")
 async def on_ready():
     """When the bot is connected to Discord and ready to start doing stuff"""
     await cmds.setup(bot)
+    await logs.setup(bot)
 
 @bot.command()
 @commands.is_owner()
