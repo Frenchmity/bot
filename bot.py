@@ -30,6 +30,12 @@ async def sync_commands(ctx):
     bot.tree.copy_global_to(guild=discord.Object(id=1036052928806518824))
     await bot.tree.sync(guild=discord.Object(id=1036052928806518824))
     await ctx.send("Commands synced!")
+    print(f"Commands synced by {ctx.author}")
 
+@bot.command()
+@commands.is_owner()
+async def stop(ctx):
+    await ctx.send("Commencing shutdown")
+    await bot.close()
 
 bot.run(config.token)
