@@ -1,5 +1,5 @@
 from contextlib import redirect_stdout
-import io, textwrap, traceback
+import io, textwrap, traceback, typing
 
 from discord.ext import commands
 import discord
@@ -22,15 +22,18 @@ class Cmds(commands.Cog):
         return content.strip("` \n")
 
     @commands.hybrid_command()
-    async def hello(self, ctx):
-        """Testing commands"""
-        await ctx.send("Hello, world!")
+    @commands.has_permissions(manage_guild=True)
+    @discord.app_commands.describe(enable="To enable/disable invites for this server")
+    async def invites(self, ctx, enable: bool):
+        """Enable or Disable Invites"""
+        await ctx.guild.edit(invites_disabled=not enable)
+        ed = "En" if enable else "Dis"
+        await ctx.send(f"{ed}abled invites", ephemeral=True)
 
     @commands.hybrid_command(hidden=True, name="eval")
     @commands.is_owner()
     async def _eval(self, ctx, *, body: str):
         """Evaluates a code"""
-
         env = {
             "bot": self.bot,
             "ctx": ctx,
@@ -77,3 +80,4 @@ class Cmds(commands.Cog):
 
 async def setup(bot):
     await bot.add_cog(Cmds(bot))
+    print("[Commands] Loaded")

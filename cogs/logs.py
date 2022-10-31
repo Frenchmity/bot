@@ -144,3 +144,4 @@ class Logs(commands.Cog):
 
 async def setup(bot):
     await bot.add_cog(Logs(bot))
+    print("[Logs] Loaded")
