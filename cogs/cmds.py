@@ -1,3 +1,4 @@
+from asyncio import subprocess
 from contextlib import redirect_stdout
 import io, textwrap, traceback, typing
 
@@ -20,15 +21,6 @@ class Cmds(commands.Cog):
 
         # remove `foo`
         return content.strip("` \n")
-
-    @commands.hybrid_command()
-    @commands.has_permissions(manage_guild=True)
-    @discord.app_commands.describe(enable="To enable/disable invites for this server")
-    async def invites(self, ctx, enable: bool):
-        """Enable or Disable Invites"""
-        await ctx.guild.edit(invites_disabled=not enable)
-        ed = "En" if enable else "Dis"
-        await ctx.send(f"{ed}abled invites", ephemeral=True)
 
     @commands.hybrid_command(hidden=True, name="eval")
     @commands.is_owner()
@@ -77,6 +69,27 @@ class Cmds(commands.Cog):
                 self._last_result = ret
                 await ctx.send(f"```py\n{value}{ret}\n```")
 
+    @commands.hybrid_command()
+    @commands.has_permissions(manage_guild=True)
+    @discord.app_commands.describe(enable="To enable/disable invites for this server")
+    async def invites(self, ctx, enable: bool):
+        """Enable or Disable Invites"""
+        await ctx.guild.edit(invites_disabled=not enable)
+        ed = "En" if enable else "Dis"
+        await ctx.send(f"{ed}abled invites", ephemeral=True)
+
+
+    @commands.command()
+    @commands.is_owner()
+    async def upgrade(self, ctx, pm_id: int = 3):
+        """Upgrade the bot"""
+        gitpull = await subprocess.create_subprocess_shell("git pull --quiet")
+        await gitpull.communicate()
+        if gitpull.returncode != 0: # 0 means successful
+            return await ctx.send("`git pull` was unsuccessful.")
+        await ctx.send("`git pull` was successful. Restarting...")
+        await self.bot.close()
+        await subprocess.create_subprocess.shell(f"pm2 restart {pm_id}")
 
 async def setup(bot):
     await bot.add_cog(Cmds(bot))
